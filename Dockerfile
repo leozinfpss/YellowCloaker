@@ -1,21 +1,14 @@
 FROM php:8.1-apache
 
-# Desativa todos os MPMs e ativa só o prefork
-RUN rm -f /etc/apache2/mods-enabled/mpm_* && \
-    ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load && \
-    ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf && \
-    a2enmod rewrite
+RUN sed -i 's/^#\(.*mpm_prefork\)/\1/' /etc/apache2/mods-enabled/mpm_event.conf 2>/dev/null || true && \
+    phpdismod mpm_event 2>/dev/null || true && \
+    a2dismod mpm_event 2>/dev/null || true && \
+    a2enmod mpm_prefork rewrite 2>/dev/null || true
 
-# Copia os arquivos do cloaker
 COPY . /var/www/html/
-
-# Permissões
 RUN chown -R www-data:www-data /var/www/html
 
-# Configura AllowOverride para o .htaccess funcionar
-RUN echo '<Directory /var/www/html>\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' >> /etc/apache2/apache2.conf
+RUN echo '<Directory /var/www/html>\nAllowOverride All\nRequire all granted\n</Directory>' \
+    >> /etc/apache2/apache2.conf
 
 EXPOSE 80
