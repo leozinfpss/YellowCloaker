@@ -1,4 +1,4 @@
 #!/bin/sh
 php-fpm -D
-sleep 1
+sleep 2
 nginx -g "daemon off;"
