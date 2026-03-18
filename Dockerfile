@@ -16,4 +16,3 @@ RUN echo '<Directory /var/www/html>\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
 EXPOSE 80
-```
