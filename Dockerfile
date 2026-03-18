@@ -1,6 +1,6 @@
 FROM php:8.1-fpm-alpine
 
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx gettext
 
 COPY . /var/www/html/
 COPY nginx.conf /etc/nginx/http.d/default.conf
