@@ -1,8 +1,10 @@
 FROM php:8.1-apache
 
-# Remove MPM duplicado e usa só o prefork
-RUN a2dismod mpm_event mpm_worker 2>/dev/null || true && \
-    a2enmod mpm_prefork rewrite
+# Desativa todos os MPMs e ativa só o prefork
+RUN rm -f /etc/apache2/mods-enabled/mpm_* && \
+    ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load && \
+    ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf && \
+    a2enmod rewrite
 
 # Copia os arquivos do cloaker
 COPY . /var/www/html/
